@@ -1,7 +1,11 @@
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #define BUFFER_SIZE 1024
+#define BUFF_SIZE 1024
 
 /**
  * _printf - function that prints out accoring to a format
@@ -20,10 +24,12 @@ int _printf(const char *format, ...)
 	int buffer_index = 0;
 	char buffer[BUFFER_SIZE];
 	va_list args;
+	int i;
+	int chars_printed;
 
 	va_start(args, format);
 
-	for (int i = 0; format[i] != '\0'; i++)
+	for (i = 0; format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
@@ -36,7 +42,7 @@ int _printf(const char *format, ...)
 		}
 		else
 		{
-			int chars_printed = handle_print(format, &i, args, buffer, &buffer_index);
+			chars_printed = handle_print(format, &i, args, buffer, &buffer_index);
 
 			if (chars_printed == -1)
 			{
@@ -73,7 +79,7 @@ int handle_print(const char *format, int *index,
 				str = va_arg(args, char *);
 				if (str == NULL)
 					str = "(null)";
-				chars_printed = _strncpy(buffer, str, BUFF_SIZE, buff_ind);
+				chars_printed = (int) strlen(str);
 				break;
 			}
 		case '%':
@@ -81,8 +87,8 @@ int handle_print(const char *format, int *index,
 				buffer[(*buff_ind)++] = '%';
 				break;
 			}
-			return (chars_printed);
 	}
+	return (chars_printed);
 }
 /**
  * print_buffer - prints contents of buffer if it exists
