@@ -7,7 +7,6 @@
  *
  * Return: Always 0
  */
-int _printf(const char *format, ...);
 int main(void)
 {
     int len;
