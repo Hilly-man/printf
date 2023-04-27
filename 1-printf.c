@@ -21,18 +21,26 @@ int _printf(const char *format, ...)
 			switch (*format)
 			{
 				case 'd':
+<<<<<<< HEAD
 				case 'i':
+=======
+>>>>>>> c489567565dffc79bde813489a5292196beff085
 					printed_chars += printf("%d", va_arg(args, int));
 					break;
 				case 's':
 					printed_chars += printf("%s", va_arg(args, char *));
+<<<<<<< HEAD
 				break;
+=======
+					break;
+>>>>>>> c489567565dffc79bde813489a5292196beff085
 				case 'c':
 					printed_chars += printf("%c", va_arg(args, int));
 					break;
 				case 'f':
 					printed_chars += printf("%f", va_arg(args, double));
 					break;
+<<<<<<< HEAD
 				case 'b':
 					printed_chars += print_binary(va_arg(args, unsigned int));
 					break;
@@ -51,18 +59,27 @@ int _printf(const char *format, ...)
 				default:
 					printed_chars += printf
 						("%%%c", *format);
+=======
+				default:
+					printed_chars += printf("%c", *format);
+>>>>>>> c489567565dffc79bde813489a5292196beff085
 					break;
 			}
 		}
 		else
 		{
+<<<<<<< HEAD
 			printed_chars += printf("%c",
 					*format);
+=======
+			printed_chars += printf("%c", *format);
+>>>>>>> c489567565dffc79bde813489a5292196beff085
 		}
 		format++;
 	}
 	va_end(args);
 	return (printed_chars);
+<<<<<<< HEAD
 }
 /**
  * print_binary - prints binary
@@ -79,4 +96,6 @@ int print_binary(unsigned int n)
 	}
 	printed_chars += printf("%d", n % 2);
 	return (printed_chars);
+=======
+>>>>>>> c489567565dffc79bde813489a5292196beff085
 }
