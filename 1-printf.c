@@ -1,80 +1,65 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 #include <stdarg.h>
 #include "main.h"
 
 /**
- * _printf - my customized printf file
- * @format: filled out properly later
- * Return: number of characters printed
+ * write_and_count - writes to the stdout and increments the count
+ * @fd: file descriptor -> 1 for the std output
+ * @buf: buffer to be written to the output stream
+ * @n: size of the buffer
+ * @count: number of characters written to the output stream
+ *
+ * Return: returns the count;
+ */
+int write_and_count(int fd, const void *buf, size_t n, int count)
+{
+	ssize_t write_res = write(fd, buf, n);
+	if (write_res < 0)
+		return count;
+	count += write_res;
+	return count;
+}
+
+/**
+ * _printf - prints formatted text to the stdout
+ * @format: how the text will be formatted
+ *
+ * Return: the number of characters printed
  */
 int _printf(const char *format, ...)
 {
+	if (format == NULL)
+		return 0;
+
 	va_list args;
-	int printed_chars = 0;
-
 	va_start(args, format);
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
-			switch (*format)
-			{
-				case 'd':
-				case 'i':
-					printed_chars += printf("%d", va_arg(args, int));
-					break;
-				case 's':
-					printed_chars += printf("%s", va_arg(args, char *));
-					break;
-				case 'c':
-					printed_chars += printf("%c", va_arg(args, int));
-					break;
-				case 'f':
-					printed_chars += printf("%f", va_arg(args, double));
-					break;
-				case 'b':
-					printed_chars += print_binary(va_arg(args, unsigned int));
-					break;
-				case 'u':
-					printed_chars += printf("%u", va_arg(args, unsigned int));
-					break;
-				case 'o':
-					printed_chars += printf("%o", va_arg(args, unsigned int));
-					break;
-				case 'x':
-					printed_chars += printf("%x", va_arg(args, unsigned int));
-					break;
-				case 'X':
-					printed_chars += printf("%X", va_arg(args, unsigned int));
-					break;
-				default:
-					printed_chars += printf("%%%c", *format);
-					break;
-			}
-		}
-		else
-		{
-			printed_chars += printf("%c", *format);
-		}
-		format++;
-	}
-	va_end(args);
-	return (printed_chars);
-}
-/**
- * print_binary - prints binary
- * @n: parameter
- * Return: printed characters
- */
-int print_binary(unsigned int n)
-{
-	int printed_chars = 0;
+	int char_printed_count = 0;
+	const char *p = format;
 
-	if (n >= 2)
+	while (*p != '\0')
 	{
-		printed_chars += print_binary(n / 2);
+		if (*p != '%')
+		{
+			char_printed_count = write_and_count(1, p, 1, char_printed_count);
+			p++;
+			continue;
+		}
+
+		p++;
+		if (*p == '\0')
+			break;
+
+		int (*result)(int, va_list) = get_handler(*p);
+		if (result == NULL)
+			return char_printed_count;
+
+		char_printed_count = result(char_printed_count, args);
+		p++;
 	}
-	printed_chars += printf("%d", n % 2);
-	return (printed_chars);
+
+	va_end(args);
+	return char_printed_count;
 }
