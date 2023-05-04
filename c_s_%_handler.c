@@ -2,69 +2,54 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdarg.h>
-
 /**
  * _printf - produces output according to a format
  * @format: format string
- * This function produces output according to a format string
- * is composed of zero or more directives, which begin with a '%' character.
- * The following conversion specifiers are supported:
  *   - %c: prints a single character
  *   - %s: prints a null-terminated string
  *   - %%: prints a single '%' character
- * Return: the number of characters printed (excluding the null byte used to
- * end output to strings)
+ * Return: the number of characters printed
  */
 int _printf(const char *format, ...)
 {
-        va_list args;
-        int len = 0;
+	va_list args;
+	int len = 0;
 
-        if (format == NULL)
-                return -1;
+	if (format == NULL)
+		return (-1);
+	va_start(args, format);
+	while (*format != '\0')
+	{
+		if (*format == '%')
+		{ format++;
+			switch (*format)
+			{
+			case 'c':{
+					char c = va_arg(args, int);
 
-        va_start(args, format);
-        while (*format != '\0')
-        {
-                if (*format == '%')
-                {
-                        format++;
-                        switch (*format)
-                        {
-                                case 'c':
-                                {
-                                        char c = va_arg(args, int);
+						len += write(1, &c, 1);
+							break;
+				}
+			case 's':{
+					char *str = va_arg(args, char *);
 
-                                        len += write(1, &c, 1);
-                                        break;
-                                }
-                                case 's':
-                                {
-                                        char *str = va_arg(args, char *);
-
-                                        if (str == NULL)
-                                                str = "(null)";
-
-                                        len += write(1, str, strlen(str));
-                                        break;
-                                }
-                                case '%':
-                                {
-                                        len += write(1, "%", 1);
-                                        break;
-                                }
-                                default:
-                                {
-                                        break;
-                                }
-                        }
-                }
-                else
-                {
-                        len += write(1, format, 1);
-                }
-                format++;
-        }
-        va_end(args);
-        return len;
+					if (str == NULL)
+						str = "(null)";
+					len += write(1, str, strlen(str));
+					break;
+				}
+			case '%':{
+					len += write(1, "%", 1);
+					break;
+				}
+			default:{
+					break;
+				}
+			}
+		} else
+		{
+			len += write(1, for, 1);
+		} format++;
+	} va_end(args);
+	return (len);
 }
