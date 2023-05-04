@@ -48,7 +48,7 @@ int _printf(const char *format, ...)
 			}
 		} else
 		{
-			len += write(1, for, 1);
+			len += write(1, format, 1);
 		} format++;
 	} va_end(args);
 	return (len);
