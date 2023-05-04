@@ -17,44 +17,54 @@
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int len = 0;
+        va_list args;
+        int len = 0;
 
-	va_start(args, format);
-	while (*format != '\0')
-	{
-		if (*format == '%')
-		{
-			format++;
-			switch (*format)
-			{
-				case 'c':{
-						char c = va_arg(args, int);
+        if (format == NULL)
+                return -1;
 
-						len += write(1, &c, 1);
-						break;
-					}
-				case 's':{
-						char *str = va_arg(args, char *);
+        va_start(args, format);
+        while (*format != '\0')
+        {
+                if (*format == '%')
+                {
+                        format++;
+                        switch (*format)
+                        {
+                                case 'c':
+                                {
+                                        char c = va_arg(args, int);
 
-						len += write(1, str, strlen(str));
-						break;
-					}
-				case '%':{
-						len += write(1, "%", 1);
-						break;
-					}
-				default:{
-						break;
-					}
-			}
-		}
-		else
-			{
-			len += write(1, format, 1);
-		}
-		format++;
-	}
-	va_end(args);
-	return (len);
+                                        len += write(1, &c, 1);
+                                        break;
+                                }
+                                case 's':
+                                {
+                                        char *str = va_arg(args, char *);
+
+                                        if (str == NULL)
+                                                str = "(null)";
+
+                                        len += write(1, str, strlen(str));
+                                        break;
+                                }
+                                case '%':
+                                {
+                                        len += write(1, "%", 1);
+                                        break;
+                                }
+                                default:
+                                {
+                                        break;
+                                }
+                        }
+                }
+                else
+                {
+                        len += write(1, format, 1);
+                }
+                format++;
+        }
+        va_end(args);
+        return len;
 }
